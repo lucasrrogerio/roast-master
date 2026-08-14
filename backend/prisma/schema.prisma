@@ -1,0 +1,121 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password_hash String
+  role          String         // ADMIN, ROAST_MASTER, STOCKIST
+  created_at    DateTime       @default(now())
+  roast_batches RoastBatch[]
+
+  @@map("users")
+}
+
+model Origin {
+  id                  String             @id @default(uuid())
+  name                String
+  producer            String
+  region              String
+  farm_name           String
+  altitude            Int?
+  created_at          DateTime           @default(now())
+  green_bean_batches GreenBeanBatch[]
+
+  @@map("origins")
+}
+
+model GreenBeanBatch {
+  id                  String        @id @default(uuid())
+  batch_code          String        @unique
+  origin_id           String
+  variety             String
+  process_method      String
+  harvest_year        String
+  moisture_pct        Float
+  sca_score           Float?
+  initial_quantity_kg Float
+  current_quantity_kg Float
+  cost_per_kg         Float
+  notes               String?
+  created_at          DateTime      @default(now())
+
+  origin              Origin        @relation(fields: [origin_id], references: [id], onDelete: Restrict)
+  roast_batches       RoastBatch[]
+
+  @@map("green_bean_batches")
+}
+
+model RoastProfile {
+  id                   String        @id @default(uuid())
+  name                 String
+  target_bean_variety  String?
+  charge_temp          Float
+  development_time_sec Int
+  drop_temp            Float
+  target_agtron        Int?
+  flavor_notes         String?
+  created_at           DateTime      @default(now())
+
+  roast_batches        RoastBatch[]
+
+  @@map("roast_profiles")
+}
+
+model RoastBatch {
+  id                  String             @id @default(uuid())
+  batch_code          String             @unique
+  green_bean_batch_id String
+  roast_profile_id    String
+  user_id             String
+  initial_weight_kg   Float
+  final_weight_kg     Float
+  weight_loss_pct     Float
+  roasted_at          DateTime           @default(now())
+  notes               String?
+
+  green_bean_batch    GreenBeanBatch     @relation(fields: [green_bean_batch_id], references: [id], onDelete: Restrict)
+  roast_profile       RoastProfile       @relation(fields: [roast_profile_id], references: [id], onDelete: Restrict)
+  user                User               @relation(fields: [user_id], references: [id], onDelete: Restrict)
+  packaging_batches   PackagingBatch[]
+
+  @@map("roast_batches")
+}
+
+model ProductSku {
+  id                  String             @id @default(uuid())
+  sku_code            String             @unique
+  name                String
+  package_weight_g    Float
+  description         String?
+  price               Float              @default(0.0)
+  current_stock_units Int                @default(0)
+  created_at          DateTime           @default(now())
+
+  packaging_batches   PackagingBatch[]
+
+  @@map("product_skus")
+}
+
+model PackagingBatch {
+  id                    String      @id @default(uuid())
+  package_batch_code    String      @unique
+  roast_batch_id        String
+  product_sku_id        String
+  units_produced        Int
+  total_roasted_used_kg Float
+  packaged_at           DateTime    @default(now())
+  notes                 String?
+
+  roast_batch           RoastBatch  @relation(fields: [roast_batch_id], references: [id], onDelete: Restrict)
+  product_sku           ProductSku  @relation(fields: [product_sku_id], references: [id], onDelete: Restrict)
+
+  @@map("packaging_batches")
+}
