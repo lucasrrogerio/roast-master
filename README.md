@@ -1,6 +1,8 @@
 # Roast Master Web
 
-Bem-vindo ao repositório do **Roast Master Web**! Este é um projeto fullstack com backend e frontend separados.
+Bem-vindo ao repositório do **Roast Master Web**! Este projeto foi gerado de ponta a ponta como um caso de uso prático do framework **LEAF** — uma ferramenta focada em aplicar conceitos de **loop engineering** para a orquestração de assistentes de código de IA. Utilizando o conceito de **user harness**, o LEAF permite estruturar pipelines multi-agente onde o feedback e as interações humanas guiam a IA na construção de aplicações complexas.
+
+O Roast Master Web é um sistema fullstack com backend e frontend separados.
 
 ## 🚀 Tecnologias
 
