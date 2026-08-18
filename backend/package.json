@@ -2,7 +2,7 @@
   "name": "roast-master-backend",
   "version": "1.0.0",
   "description": "Backend API for Roast Master Web",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "build": "prisma generate && tsc",
     "start": "node dist/index.js",
