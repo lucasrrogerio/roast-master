@@ -1,0 +1,8 @@
+{
+  "name": "roast-master-web",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+}
